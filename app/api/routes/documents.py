@@ -1,0 +1,67 @@
+import shutil
+import uuid
+from pathlib import Path
+from typing import Optional
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from app.config import get_settings
+from app.ingestion.pipeline import IngestionPipeline
+from app.models.schemas import DocumentInfo, DocumentUploadResponse, PastedTextRequest
+
+router = APIRouter()
+settings = get_settings()
+pipeline = IngestionPipeline()
+
+
+@router.post("/upload", response_model=DocumentUploadResponse)
+async def upload_document(
+    file: UploadFile = File(...),
+    document_name: str = Form(default=""),
+) -> DocumentUploadResponse:
+    suffix = Path(file.filename or "document.txt").suffix
+    save_path = settings.upload_dir / f"{uuid.uuid4()}{suffix}"
+
+    with open(save_path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+
+    try:
+        doc_info, _ = pipeline.ingest_file(
+            file_path=save_path,
+            document_name=document_name or None,
+        )
+    finally:
+        save_path.unlink(missing_ok=True)
+
+    return DocumentUploadResponse(
+        document=doc_info,
+        chunks_created=doc_info.chunk_count,
+        message=f"Successfully ingested '{doc_info.document_name}' with {doc_info.chunk_count} chunks",
+    )
+
+
+@router.post("/paste", response_model=DocumentUploadResponse)
+def paste_text(payload: PastedTextRequest) -> DocumentUploadResponse:
+    doc_info, _ = pipeline.ingest_pasted_text(
+        content=payload.content,
+        title=payload.title,
+    )
+
+    return DocumentUploadResponse(
+        document=doc_info,
+        chunks_created=doc_info.chunk_count,
+        message=f"Successfully ingested pasted text '{doc_info.document_name}' with {doc_info.chunk_count} chunks",
+    )
+
+@router.get("/",response_model=list[DocumentInfo])
+def list_documents() -> list[DocumentInfo]:
+    return pipeline.document_store.list_all()
+
+@router.get("/{document_id}", response_model=DocumentInfo)
+def get_documents(document_id:str) -> Optional[DocumentInfo]:
+    return pipeline.document_store.get(document_id)
+
+
+
+@router.delete("/{document_id}", status_code=204)
+def delete_document(document_id: str) -> None:
+    if not pipeline.delete_document(document_id):
+        raise HTTPException(status_code=404, detail="Document not found")

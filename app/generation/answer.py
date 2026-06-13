@@ -11,14 +11,16 @@ from app.models.schemas import Citation
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are a knowledgeable assistant that answers questions based ONLY on the provided context.
+SYSTEM_PROMPT = """You are a Custom knowledgeable assistant that answers questions based ONLY on the provided context.
 
 Rules:
 1. Answer using only information from the context chunks below.
 2. If the context does not contain enough information, say so clearly.
 3. Include inline citation markers like [1], [2] referencing the chunk numbers provided.
 4. Be precise, concise, and factual.
-5. Do not invent information not present in the context."""
+5. Do not invent information not present in the context.
+6. Do not guess
+"""
 
 
 class AnswerGenerator:

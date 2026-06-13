@@ -60,6 +60,11 @@ def get_documents(document_id:str) -> Optional[DocumentInfo]:
     return pipeline.document_store.get(document_id)
 
 
+@router.delete("/flush_all",status_code=204)
+def delete() -> None:
+    if not pipeline.database_flush():
+        raise HTTPException(status_code=404, detail = 'Already empty')
+
 
 @router.delete("/{document_id}", status_code=204)
 def delete_document(document_id: str) -> None:

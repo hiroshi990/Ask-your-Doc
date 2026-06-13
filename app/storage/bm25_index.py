@@ -86,6 +86,13 @@ class BM25Index:
             document_id,
             len(corpus),
         )
+    
+    def remove_everything(self) -> None:
+        self._corpus = []
+        self._bm25 = None
+        logger.info("Erased bm25 index")
+
+
 
     def search(
         self,

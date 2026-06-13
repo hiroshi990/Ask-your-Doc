@@ -20,3 +20,5 @@ build/
 .coverage
 htmlcov/
 models_cache/
+test.py
+prompt.md

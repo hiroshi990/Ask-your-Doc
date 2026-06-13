@@ -110,6 +110,19 @@ class IngestionPipeline:
         self.cache.flush_all()
         logger.info("Deleted document %s and all its chunks", document_id)
         return True
+    
+    def database_flush(self) -> bool:
+        doc = self.document_store._load()
+        if not doc :
+            return False
+        
+        self.qdrant.delete_everything()
+        self.bm25.remove_everything()
+        self.document_store.delete_all()
+        self.cache.flush_all()
+        logger.info("Removed everything from database")
+        return True
+
 
     def _index_chunks(self, chunks: list[ChunkRecord]) -> None:
         if not chunks:

@@ -6,7 +6,8 @@ from pathlib import Path
 from typing import Optional
 
 from docling.datamodel.base_models import InputFormat
-from docling.document_converter import DocumentConverter
+from docling.datamodel.pipeline_options import PdfPipelineOptions
+from docling.document_converter import DocumentConverter,PdfFormatOption
 from docling_core.types.doc.document import DoclingDocument
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,14 @@ class DocumentParser:
     """Parses files and pasted text into DoclingDocument objects."""
 
     def __init__(self) -> None:
-        self._converter = DocumentConverter()
+        self.options = PdfPipelineOptions()
+        self.options.do_ocr = False
+        self.do_table_structure = False
+        self._converter = DocumentConverter(format_options={
+            InputFormat.PDF:PdfFormatOption(
+                pipeline_options=self.options
+            )
+        })
 
     def parse_file(self, file_path: Path) -> DoclingDocument:
         suffix = file_path.suffix.lower()

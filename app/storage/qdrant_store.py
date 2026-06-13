@@ -101,7 +101,14 @@ class QdrantStore:
             }
             for hit in results.points
         ]
-
+    def delete_everything(self) -> None:
+        collections = [c.name for c in self._client.get_collections().collections]
+        if self._collection not in collections:
+            return 
+            logger.info("Already empty")
+        self._client.delete_collection(collection_name=self._collection)
+        logger.info("Deleted entire collection")
+    
     def delete_by_document_id(self, document_id: str) -> None:
         collections = [c.name for c in self._client.get_collections().collections]
         if self._collection not in collections:

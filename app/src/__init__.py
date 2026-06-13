@@ -1,3 +1,3 @@
-from app.services.rag_service import RAGService
+from app.src.rag_service import RAGService
 
 __all__ = ["RAGService"]

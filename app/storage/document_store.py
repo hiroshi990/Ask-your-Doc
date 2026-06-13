@@ -71,6 +71,11 @@ class DocumentStore:
             uploaded_at=datetime.fromisoformat(doc["uploaded_at"]),
         )
 
+    
+    def delete_all(self) -> None:
+        self._save({"documents": {}})
+        logger.info("Removed all documents from document store")
+    
     def delete(self, document_id: str) -> bool:
         data = self._load()
         if document_id not in data.get("documents", {}):

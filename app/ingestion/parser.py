@@ -4,7 +4,7 @@ import logging
 import tempfile
 from pathlib import Path
 from typing import Optional
-
+import pypdf
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter,PdfFormatOption
@@ -24,13 +24,10 @@ class DocumentParser:
 
     def __init__(self) -> None:
         self.options = PdfPipelineOptions()
-        self.options.do_ocr = False
-        self.options.do_table_structure = False
-        self._converter = DocumentConverter(format_options={
-            InputFormat.PDF:PdfFormatOption(
-                pipeline_options=self.options
-            )
-        })
+        self.options.do_ocr = True
+        self.options.do_table_structure = True
+        self.page_interval = 3
+        self.final_text = []
 
     def parse_file(self, file_path: Path) -> DoclingDocument:
         suffix = file_path.suffix.lower()
@@ -39,9 +36,27 @@ class DocumentParser:
                 f"Unsupported file type: {suffix}. "
                 f"Supported: {', '.join(sorted(SUPPORTED_EXTENSIONS))}"
             )
+        reader = pypdf.PdfReader(str(file_path))
+        total_pages = reader.get_num_pages()
         logger.info("Parsing file: %s", file_path.name)
-        result = self._converter.convert(str(file_path))
-        return result.document
+        for start_idx in range(0,total_pages,self.page_interval):
+            end_idx = min(start_idx+self.page_interval,total_pages)
+
+            try:
+                converter = DocumentConverter(format_options={
+            InputFormat.PDF:PdfFormatOption(
+                pipeline_options=self.options
+            )})
+
+                result = converter.convert(str(file_path),page_range=(start_idx,end_idx))
+                md_text = result.document.export_to_markdown()
+                self.final_text.append(md_text)
+            except Exception as e:
+                print("Error parsing the file",e)
+
+        content = "\n\n".join(self.final_text) 
+        response = converter.convert_string(content,format=InputFormat.MD)
+        return response.document       
 
     def parse_text(
         self,

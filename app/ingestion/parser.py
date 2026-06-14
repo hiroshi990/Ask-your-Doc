@@ -25,7 +25,7 @@ class DocumentParser:
     def __init__(self) -> None:
         self.options = PdfPipelineOptions()
         self.options.do_ocr = False
-        self.do_table_structure = False
+        self.options.do_table_structure = False
         self._converter = DocumentConverter(format_options={
             InputFormat.PDF:PdfFormatOption(
                 pipeline_options=self.options

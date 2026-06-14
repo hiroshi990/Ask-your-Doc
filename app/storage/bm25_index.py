@@ -88,9 +88,8 @@ class BM25Index:
         )
     
     def remove_everything(self) -> None:
-        self._corpus = []
-        self._bm25 = None
-        logger.info("Erased bm25 index")
+        self._rebuild([])
+        logger.info("Cleared bm25 index")
 
 
 

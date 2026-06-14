@@ -73,7 +73,9 @@ class DocumentStore:
 
     
     def delete_all(self) -> None:
-        self._save({"documents": {}})
+        data = self._load()
+        data['documents'] = {}
+        self._save(data)
         logger.info("Removed all documents from document store")
     
     def delete(self, document_id: str) -> bool:

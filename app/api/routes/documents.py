@@ -28,6 +28,8 @@ async def upload_document(
             file_path=save_path,
             document_name=document_name or None,
         )
+    except:
+        raise HTTPException(status_code=400,detail="Document is too big to process")
     finally:
         save_path.unlink(missing_ok=True)
 
@@ -40,10 +42,14 @@ async def upload_document(
 
 @router.post("/paste", response_model=DocumentUploadResponse)
 def paste_text(payload: PastedTextRequest) -> DocumentUploadResponse:
-    doc_info, _ = pipeline.ingest_pasted_text(
-        content=payload.content,
-        title=payload.title,
-    )
+    try:
+
+        doc_info, _ = pipeline.ingest_pasted_text(
+            content=payload.content,
+            title=payload.title,
+        )
+    except:
+        raise HTTPException(status_code=400,detail="Text is too large to process")
 
     return DocumentUploadResponse(
         document=doc_info,

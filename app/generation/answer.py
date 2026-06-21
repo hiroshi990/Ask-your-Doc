@@ -3,12 +3,13 @@
 import logging
 import re
 from typing import Any, Optional
-
+from dotenv import load_dotenv
 from openai import OpenAI
-
+from langsmith.wrappers import wrap_openai
 from app.config import Settings, get_settings
 from app.models.schemas import Citation
 
+load_dotenv()
 logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """You are a Custom knowledgeable assistant that answers questions based ONLY on the provided context.
@@ -26,7 +27,7 @@ Rules:
 class AnswerGenerator:
     def __init__(self, settings: Optional[Settings] = None) -> None:
         self.settings = settings or get_settings()
-        self._client = OpenAI(api_key=self.settings.openai_api_key)
+        self._client = wrap_openai(OpenAI(api_key=self.settings.openai_api_key))
 
     def _build_context(self, chunks: list[dict[str, Any]]) -> str:
         parts = []

@@ -59,3 +59,12 @@ class ChatResponse(BaseModel):
     citations: list[Citation]
     retrieved_chunks: list[RetrievedChunk]
     cache_hit: bool
+
+class EvaluatedResponse(BaseModel):
+    query: str
+    answer: str
+    faithfulness_score: float
+    answer_relevancy: float
+    citations: list[Citation]
+    retrieved_chunks: list[RetrievedChunk]
+    cache_hit: bool

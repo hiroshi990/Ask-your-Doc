@@ -9,6 +9,7 @@ from app.retrieval.reranker import CohereReranker
 from app.retrieval.rrf import deduplicate_chunks, reciprocal_rank_fusion
 from app.storage.bm25_index import BM25Index
 from app.storage.qdrant_store import QdrantStore
+from langsmith import traceable
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +34,7 @@ class HybridRetriever:
         self.embedder = embedder or get_embedder()
         self.reranker = reranker or CohereReranker()
 
+    @traceable(name='retriever')
     def retrieve(
         self,
         query: str,

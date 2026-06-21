@@ -118,7 +118,7 @@ class StructureAwareChunker:
                 continue
 
             meta = chunk.meta
-            headings = list(meta.headings) if hasattr(meta, "headings") and meta.headings else []
+            headings = list(meta.headings) if hasattr(meta, "headings") and meta.headings else []  # pyright: ignore[reportAttributeAccessIssue]
             section_title = headings[-1] if headings else None
             section_path = self._build_section_path(headings)
             page_number = self._extract_page_number(meta)

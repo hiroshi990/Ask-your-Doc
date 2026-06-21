@@ -43,10 +43,13 @@ class Settings(BaseSettings):
     rrf_k: int = 60
     rerank_top_k: int = 8
 
+    #Monitoring
+    langsmith_api_key: str = ""
+
     # Paths
     upload_dir: Path = Path("./uploads")
     data_dir: Path = Path("./data")
-
+    result_dir:Path = Path("./results")
     log_level: str = "INFO"
 
     @property
@@ -59,4 +62,5 @@ def get_settings() -> Settings:
     settings = Settings()
     settings.upload_dir.mkdir(parents=True, exist_ok=True)
     settings.data_dir.mkdir(parents=True, exist_ok=True)
+    settings.result_dir.mkdir(parents=True, exist_ok=True)
     return settings

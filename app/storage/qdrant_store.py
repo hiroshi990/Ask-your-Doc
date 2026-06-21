@@ -93,10 +93,10 @@ class QdrantStore:
         
         return [
             {
-                "chunk_id": hit.payload.get("chunk_id", str(hit.id)),
-                "document_id": hit.payload.get("document_id", ""),
-                "text": hit.payload.get("text", ""),
-                "metadata": {k: v for k, v in hit.payload.items() if k != "text"},
+                "chunk_id": hit.payload.get("chunk_id", str(hit.id)),  # pyright: ignore[reportOptionalMemberAccess]
+                "document_id": hit.payload.get("document_id", ""),  # pyright: ignore[reportOptionalMemberAccess]
+                "text": hit.payload.get("text", ""),  # pyright: ignore[reportOptionalMemberAccess]
+                "metadata": {k: v for k, v in hit.payload.items() if k != "text"},  # pyright: ignore[reportOptionalMemberAccess]
                 "dense_score": hit.score
             }
             for hit in results.points

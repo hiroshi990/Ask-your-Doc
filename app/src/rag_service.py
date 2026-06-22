@@ -1,5 +1,3 @@
-"""Orchestrates the complete RAG pipeline."""
-
 import logging
 
 from app.cache.redis_cache import RedisCache

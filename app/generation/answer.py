@@ -1,5 +1,3 @@
-"""GPT-based answer generation with citation grounding."""
-
 import logging
 import re
 from typing import Any, Optional

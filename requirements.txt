@@ -25,5 +25,3 @@ python-dotenv>=1.0.1
 aiofiles>=24.1.0
 httpx>=0.28.0
 langsmith[openai-agents]
-ragas
-datasets

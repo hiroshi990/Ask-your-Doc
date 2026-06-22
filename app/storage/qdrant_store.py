@@ -1,5 +1,3 @@
-"""Qdrant vector store for dense retrieval (single collection)."""
-
 import logging
 import uuid
 from typing import Any, Optional

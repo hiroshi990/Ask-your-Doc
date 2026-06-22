@@ -1,5 +1,3 @@
-"""Lightweight document manifest for listing and deletion."""
-
 import json
 import logging
 from datetime import datetime, timezone

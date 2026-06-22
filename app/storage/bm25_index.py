@@ -1,5 +1,3 @@
-"""BM25 sparse retrieval index (single corpus)."""
-
 import logging
 import pickle
 import re

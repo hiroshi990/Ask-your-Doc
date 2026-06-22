@@ -1,5 +1,3 @@
-"""Structure-aware chunking using Docling HybridChunker with token overlap."""
-
 import logging
 import uuid
 from dataclasses import dataclass, field
@@ -24,13 +22,7 @@ class ChunkRecord:
 
 
 class StructureAwareChunker:
-    """
-    Structure-aware chunking that:
-    - Respects document hierarchy (headers, sections, subsections)
-    - Respects paragraph and section boundaries
-    - Targets 500-700 tokens with 75-token overlap
-    """
-
+    
     def __init__(self, settings: Optional[Settings] = None) -> None:
         self.settings = settings or get_settings()
         self._tokenizer = AutoTokenizer.from_pretrained(self.settings.embedding_model)

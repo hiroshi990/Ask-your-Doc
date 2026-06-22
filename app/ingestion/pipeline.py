@@ -1,5 +1,3 @@
-"""End-to-end document ingestion pipeline."""
-
 import logging
 import uuid
 from datetime import datetime, timezone

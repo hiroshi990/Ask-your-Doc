@@ -1,5 +1,3 @@
-"""Reciprocal Rank Fusion for combining dense and sparse retrieval results."""
-
 from typing import Any
 
 

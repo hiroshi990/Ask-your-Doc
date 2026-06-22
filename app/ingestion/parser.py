@@ -1,5 +1,3 @@
-"""Document parsing via Docling."""
-
 import logging
 import tempfile
 from pathlib import Path

@@ -1,5 +1,3 @@
-"""BGE-M3 embedding generation."""
-
 import logging
 from functools import lru_cache
 from typing import Optional

@@ -1,5 +1,3 @@
-"""Hybrid retrieval pipeline: dense + sparse -> RRF -> dedup -> rerank."""
-
 import logging
 from typing import Any, Optional
 

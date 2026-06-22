@@ -1,5 +1,3 @@
-"""Redis exact query cache."""
-
 import hashlib
 import json
 import logging
@@ -13,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 
 class RedisCache:
-    """Exact query cache: normalized query -> answer + citations."""
 
     def __init__(self, settings: Optional[Settings] = None) -> None:
         self.settings = settings or get_settings()

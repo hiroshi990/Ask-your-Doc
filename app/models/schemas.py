@@ -50,7 +50,6 @@ class RetrievedChunk(BaseModel):
 class ChatRequest(BaseModel):
     query: str = Field(..., min_length=1)
     use_cache: bool = True
-    metadata_filters: Optional[dict[str, Any]] = None
 
 
 class ChatResponse(BaseModel):
@@ -63,8 +62,7 @@ class ChatResponse(BaseModel):
 class EvaluatedResponse(BaseModel):
     query: str
     answer: str
+    citations: list[Citation]
     faithfulness_score: float
     answer_relevancy: float
-    citations: list[Citation]
     retrieved_chunks: list[RetrievedChunk]
-    cache_hit: bool

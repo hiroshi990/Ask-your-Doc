@@ -11,7 +11,6 @@ from app.models.schemas import (
     RetrievedChunk,
 )
 from app.retrieval.hybrid import HybridRetriever
-from langsmith import traceable
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,6 @@ class RAGService:
         self.cache = RedisCache()
         self.generator = AnswerGenerator()
 
-    @traceable(name="entire")
     def chat(self, request: ChatRequest) -> ChatResponse:
         if request.use_cache:
             cached = self.cache.get(request.query)
@@ -41,7 +39,6 @@ class RAGService:
 
         chunks = self.retriever.retrieve(
             query=request.query,
-            metadata_filters=request.metadata_filters,
         )
 
         answer, citations = self.generator.generate(request.query, chunks)

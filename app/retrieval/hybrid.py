@@ -38,21 +38,19 @@ class HybridRetriever:
     def retrieve(
         self,
         query: str,
-        metadata_filters: Optional[dict[str, Any]] = None,
     ) -> list[dict[str, Any]]:
         query_vector = self.embedder.embed_query(query)
 
         dense_results = self.qdrant.dense_search(
             query_vector=query_vector,
             top_k=self.settings.dense_top_k,
-            metadata_filters=metadata_filters,
+
         )
         logger.info("Dense retrieval: %d results", len(dense_results))
 
         sparse_results = self.bm25.search(
             query=query,
             top_k=self.settings.sparse_top_k,
-            metadata_filters=metadata_filters,
         )
         logger.info("Sparse retrieval: %d results", len(sparse_results))
 

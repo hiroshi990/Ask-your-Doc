@@ -1,6 +1,6 @@
 # Ask your Doc !
 
-Portfolio-grade Retrieval-Augmented Generation (RAG) system: upload documents, build a searchable corpus, and chat with citation-grounded answers.
+Custom Knowledge Base Retrieval-Augmented Generation (RAG) system: upload documents, build a searchable corpus, and chat with citation-grounded answers.
 
 ## Features
 

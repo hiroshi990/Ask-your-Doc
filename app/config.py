@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
+        case_sensitive=False,
         extra="ignore",
     )
 
@@ -38,10 +39,10 @@ class Settings(BaseSettings):
     chunk_overlap_tokens: int = 75
 
     # Retrieval
-    dense_top_k: int = 20
-    sparse_top_k: int = 20
+    dense_top_k: int = 10
+    sparse_top_k: int = 10
     rrf_k: int = 60
-    rerank_top_k: int = 8
+    rerank_top_k: int = 5
 
     #Monitoring
     langsmith_api_key: str = ""
@@ -49,7 +50,6 @@ class Settings(BaseSettings):
     # Paths
     upload_dir: Path = Path("./uploads")
     data_dir: Path = Path("./data")
-    result_dir:Path = Path("./results")
     log_level: str = "INFO"
 
     @property
@@ -62,5 +62,8 @@ def get_settings() -> Settings:
     settings = Settings()
     settings.upload_dir.mkdir(parents=True, exist_ok=True)
     settings.data_dir.mkdir(parents=True, exist_ok=True)
-    settings.result_dir.mkdir(parents=True, exist_ok=True)
     return settings
+
+def bust_cache():
+    get_settings.cache_clear()
+    return get_settings()

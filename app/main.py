@@ -11,10 +11,11 @@ settings = get_settings()
 logging.basicConfig(level=settings.log_level)
 
 app = FastAPI(
-    title="Enterprise RAG Knowledge Assistant",
+    title="Ask your Doc!",
     description=(
-        "RAG system with structure-aware chunking, hybrid retrieval "
-        "(dense + BM25 + RRF + Cohere reranking), Redis caching, and citation-grounded answers."
+        "Chat with your custom knowledge base and get grounded responses with citations"
+        "\n RAG system with structure-aware chunking,"
+        " (Hybrid Retrival with RRF and Cohere reranking), Redis caching."
     ),
     version=__version__,
 )
@@ -29,7 +30,3 @@ app.add_middleware(
 
 app.include_router(api_router, prefix="/api/v1")
 
-
-@app.get("/health")
-def health() -> dict:
-    return {"status": "healthy", "version": __version__}

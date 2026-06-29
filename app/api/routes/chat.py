@@ -8,6 +8,6 @@ rag_service = EvaluationService()
 
 
 @router.post("", response_model=EvaluatedResponse)
-def chat(request: ChatRequest) -> EvaluatedResponse:
+async def chat(request: ChatRequest) -> EvaluatedResponse:
 
-    return rag_service.run_evaluation(request)
+    return await rag_service.run_evaluation(request)

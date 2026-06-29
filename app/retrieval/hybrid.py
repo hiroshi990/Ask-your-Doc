@@ -58,14 +58,14 @@ class HybridRetriever:
         logger.info("Sparse retrieval: %d results", len(sparse_results))
         logger.info("Dense retrieval: %d results", len(dense_results))
 
-        fused = await reciprocal_rank_fusion(
+        fused = reciprocal_rank_fusion(
             [dense_results, sparse_results],
             k=self.settings.rrf_k,
         )
-        deduped = await deduplicate_chunks(fused)
+        deduped = deduplicate_chunks(fused)
         logger.info("After RRF + dedup: %d results", len(deduped))
 
-        reranked = await self.reranker.rerank(
+        reranked = self.reranker.rerank(
             query=query,
             chunks=deduped,
             top_k=self.settings.rerank_top_k,

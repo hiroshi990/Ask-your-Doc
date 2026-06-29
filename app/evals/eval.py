@@ -58,8 +58,8 @@ class EvaluationService:
         return score_relevancy
 
     @traceable(name = "Evaluation")
-    def run_evaluation(self,request:ChatRequest) -> EvaluatedResponse:
-        result = self.pipeline.chat(request)
+    async def run_evaluation(self,request:ChatRequest) -> EvaluatedResponse:
+        result = await self.pipeline.chat(request)
         faithfulness_score = self._score_faithfulness(result)
         relevance_score = self._score_relevancy(result)
 

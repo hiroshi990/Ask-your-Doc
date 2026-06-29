@@ -29,7 +29,8 @@ class QdrantStore:
         self._collection = self.settings.qdrant_collection_name
 
     async def ensure_collection(self, dimension: int) -> None:
-        collections = [c.name for c in await self._client.get_collections().collections]
+        response = await self._client.get_collections()
+        collections = [c.name for c in response.collections]
         if self._collection not in collections:
             await self._client.create_collection(
                 collection_name=self._collection,
@@ -67,7 +68,8 @@ class QdrantStore:
         query_vector: np.ndarray,
         top_k: int = 20
     ) -> list[dict[str, Any]]:
-        collections = [c.name for c in await self._client.get_collections().collections]
+        response = await self._client.get_collections()
+        collections = [c.name for c in response.collections]
         if self._collection not in collections:
             return []
 
@@ -89,7 +91,8 @@ class QdrantStore:
             for hit in results.points
         ]
     async def delete_everything(self) -> None:
-        collections = [c.name for c in await self._client.get_collections().collections]
+        response = await self._client.get_collections()
+        collections = [c.name for c in response.collections]
         if self._collection not in collections:
             return 
         logger.info("Already empty")    
@@ -97,7 +100,8 @@ class QdrantStore:
         logger.info("Deleted entire collection")
     
     async def delete_by_document_id(self, document_id: str) -> None:
-        collections = [c.name for c in await self._client.get_collections().collections]
+        response = await self._client.get_collections()
+        collections = [c.name for c in response.collections]
         if self._collection not in collections:
             return
 

@@ -15,7 +15,7 @@ class CohereReranker:
         if self.settings.cohere_api_key:
             self._client = cohere.ClientV2(api_key=self.settings.cohere_api_key)
 
-    async def rerank(
+    def rerank(
         self,
         query: str,
         chunks: list[dict[str, Any]],

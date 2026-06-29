@@ -19,7 +19,7 @@ class RAGService:
         self.cache = RedisCache()
         self.generator = AnswerGenerator()
 
-    def chat(self, request: ChatRequest) -> ChatResponse:
+    async def chat(self, request: ChatRequest) -> ChatResponse:
         if request.use_cache:
             cached = self.cache.get(request.query)
             if cached:
@@ -35,7 +35,7 @@ class RAGService:
                     cache_hit=True,
                 )
 
-        chunks = self.retriever.retrieve(
+        chunks = await self.retriever.retrieve(
             query=request.query,
         )
 

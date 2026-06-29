@@ -8,7 +8,7 @@ from app.retrieval.rrf import deduplicate_chunks, reciprocal_rank_fusion
 from app.storage.bm25_index import BM25Index
 from app.storage.qdrant_store import QdrantStore
 from langsmith import traceable
-
+import asyncio
 logger = logging.getLogger(__name__)
 
 
@@ -33,33 +33,39 @@ class HybridRetriever:
         self.reranker = reranker or CohereReranker()
 
     @traceable(name='retriever')
-    def retrieve(
+    async def retrieve(
         self,
         query: str,
     ) -> list[dict[str, Any]]:
         query_vector = self.embedder.embed_query(query)
 
-        dense_results = self.qdrant.dense_search(
+        dense_task = self.qdrant.dense_search(
             query_vector=query_vector,
             top_k=self.settings.dense_top_k,
 
         )
-        logger.info("Dense retrieval: %d results", len(dense_results))
+        
 
-        sparse_results = self.bm25.search(
+        sparse_task = self.bm25.search(
             query=query,
             top_k=self.settings.sparse_top_k,
         )
-        logger.info("Sparse retrieval: %d results", len(sparse_results))
 
-        fused = reciprocal_rank_fusion(
+        dense_results, sparse_results = await asyncio.gather(
+            dense_task, 
+            sparse_task
+        )
+        logger.info("Sparse retrieval: %d results", len(sparse_results))
+        logger.info("Dense retrieval: %d results", len(dense_results))
+
+        fused = await reciprocal_rank_fusion(
             [dense_results, sparse_results],
             k=self.settings.rrf_k,
         )
-        deduped = deduplicate_chunks(fused)
+        deduped = await deduplicate_chunks(fused)
         logger.info("After RRF + dedup: %d results", len(deduped))
 
-        reranked = self.reranker.rerank(
+        reranked = await self.reranker.rerank(
             query=query,
             chunks=deduped,
             top_k=self.settings.rerank_top_k,

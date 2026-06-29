@@ -78,7 +78,6 @@ class DocumentParser:
         content: str,
         title: str = "Pasted Text",
     ) -> DoclingDocument:
-        """Treat pasted text exactly like a document."""
         logger.info("Parsing pasted text: %s", title)
         with tempfile.NamedTemporaryFile(
             mode="w",

@@ -3,7 +3,7 @@ import uuid
 from typing import Any, Optional
 
 import numpy as np
-from qdrant_client import QdrantClient
+from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import (
     Distance,
     FieldCondition,
@@ -15,29 +15,29 @@ from qdrant_client.models import (
 
 from app.config import Settings, get_settings
 from app.ingestion.chunker import ChunkRecord
-
+import asyncio
 logger = logging.getLogger(__name__)
 
 
 class QdrantStore:
     def __init__(self, settings: Optional[Settings] = None) -> None:
         self.settings = settings or get_settings()
-        self._client = QdrantClient(
+        self._client = AsyncQdrantClient(
             host=self.settings.qdrant_host,
             port=self.settings.qdrant_port,
         )
         self._collection = self.settings.qdrant_collection_name
 
-    def ensure_collection(self, dimension: int) -> None:
-        collections = [c.name for c in self._client.get_collections().collections]
+    async def ensure_collection(self, dimension: int) -> None:
+        collections = [c.name for c in await self._client.get_collections().collections]
         if self._collection not in collections:
-            self._client.create_collection(
+            await self._client.create_collection(
                 collection_name=self._collection,
                 vectors_config=VectorParams(size=dimension, distance=Distance.COSINE),
             )
             logger.info("Created Qdrant collection: %s", self._collection)
 
-    def upsert_chunks(
+    async def upsert_chunks(
         self,
         chunks: list[ChunkRecord],
         embeddings: np.ndarray,
@@ -45,7 +45,7 @@ class QdrantStore:
         if len(chunks) == 0:
             return
         dimension = embeddings.shape[1]
-        self.ensure_collection(dimension)
+        await self.ensure_collection(dimension)
 
         points = []
         for chunk, vector in zip(chunks, embeddings):
@@ -59,32 +59,21 @@ class QdrantStore:
                 )
             )
 
-        self._client.upsert(collection_name=self._collection, points=points)
+        await self._client.upsert(collection_name=self._collection, points=points)
         logger.info("Upserted %d points to %s", len(points), self._collection)
 
-    def dense_search(
+    async def dense_search(
         self,
         query_vector: np.ndarray,
-        top_k: int = 20,
-        metadata_filters: Optional[dict[str, Any]] = None,
+        top_k: int = 20
     ) -> list[dict[str, Any]]:
-        collections = [c.name for c in self._client.get_collections().collections]
+        collections = [c.name for c in await self._client.get_collections().collections]
         if self._collection not in collections:
             return []
 
-        must_conditions = []
-        if metadata_filters:
-            for key, value in metadata_filters.items():
-                must_conditions.append(
-                    FieldCondition(key=key, match=MatchValue(value=value))
-                )
-
-        query_filter = Filter(must=must_conditions) if must_conditions else None
-
-        results = self._client.query_points(
+        results = await self._client.query_points(
             collection_name=self._collection,
             query=query_vector.tolist(),
-            query_filter=query_filter,
             limit=top_k,
             with_payload=True,
         )
@@ -99,20 +88,20 @@ class QdrantStore:
             }
             for hit in results.points
         ]
-    def delete_everything(self) -> None:
-        collections = [c.name for c in self._client.get_collections().collections]
+    async def delete_everything(self) -> None:
+        collections = [c.name for c in await self._client.get_collections().collections]
         if self._collection not in collections:
             return 
-            logger.info("Already empty")
-        self._client.delete_collection(collection_name=self._collection)
+        logger.info("Already empty")    
+        await self._client.delete_collection(collection_name=self._collection)
         logger.info("Deleted entire collection")
     
-    def delete_by_document_id(self, document_id: str) -> None:
-        collections = [c.name for c in self._client.get_collections().collections]
+    async def delete_by_document_id(self, document_id: str) -> None:
+        collections = [c.name for c in await self._client.get_collections().collections]
         if self._collection not in collections:
             return
 
-        self._client.delete(
+        await self._client.delete(
             collection_name=self._collection,
             points_selector=Filter(
                 must=[

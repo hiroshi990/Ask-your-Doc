@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from rank_bm25 import BM25Okapi
+import asyncio
 
 from app.config import Settings, get_settings
 from app.ingestion.chunker import ChunkRecord
@@ -91,11 +92,10 @@ class BM25Index:
 
 
 
-    def search(
+    def _sync_search(
         self,
         query: str,
-        top_k: int = 20,
-        metadata_filters: Optional[dict[str, Any]] = None,
+        top_k: int = 20
     ) -> list[dict[str, Any]]:
         bm25, corpus = self._load()
         if not corpus or bm25 is None:
@@ -116,9 +116,7 @@ class BM25Index:
                 continue
             entry = corpus[idx]
             meta = entry["metadata"]
-            if metadata_filters:
-                if not all(meta.get(k) == v for k, v in metadata_filters.items()):
-                    continue
+    
             results.append({
                 "chunk_id": entry["chunk_id"],
                 "document_id": entry["document_id"],
@@ -130,3 +128,10 @@ class BM25Index:
                 break
 
         return results
+
+    async def search(self,query:str,top_k:int = 20) -> list[dict[str,Any]]:
+        return await asyncio.to_thread(
+            self._sync_search,
+            query,
+            top_k
+        )

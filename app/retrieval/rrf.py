@@ -1,7 +1,7 @@
 from typing import Any
 
 
-def reciprocal_rank_fusion(
+async def reciprocal_rank_fusion(
     rankings: list[list[dict[str, Any]]],
     k: int = 60,
 ) -> list[dict[str, Any]]:
@@ -33,7 +33,7 @@ def reciprocal_rank_fusion(
     return fused
 
 
-def deduplicate_chunks(chunks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+async def deduplicate_chunks(chunks: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Remove duplicate chunks by chunk_id, keeping highest RRF score."""
     seen: dict[str, dict[str, Any]] = {}
     for chunk in chunks:

@@ -60,10 +60,11 @@ python run.py
 ```
 <img width="1920" height="933" alt="Screenshot 2026-07-06 193150" src="https://github.com/user-attachments/assets/62df3f94-531b-45e0-b0e8-6fa4ad513c67" />
 
+<img width="1908" height="930" alt="image" src="https://github.com/user-attachments/assets/cb37280e-9725-4062-87fa-de49bdcf18b3" />
 
+<img width="1901" height="925" alt="image" src="https://github.com/user-attachments/assets/b2a4afec-4b51-4631-b384-a8bf7e959572" />
 
-
-
+<img width="1907" height="951" alt="image" src="https://github.com/user-attachments/assets/a3bc44c7-7c30-4355-9e7e-c1ad6b8a7e85" />
 
 API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 

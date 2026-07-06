@@ -21,9 +21,7 @@ User Query
     ↓
 Redis Exact Cache Check
     ↓
-Dense Retrieval (Qdrant + BAAI/bge-m3)
-    +
-Sparse Retrieval (BM25)
+Dense Retrieval(Qdrant + BAAI/bge-m3) + Sparse Retrieval(BM25) [Asynchronous]
     ↓
 RRF Fusion → Deduplication → Cohere Rerank
     ↓

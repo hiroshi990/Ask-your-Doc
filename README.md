@@ -58,6 +58,12 @@ pip install -r requirements.txt
 ```bash
 python run.py
 ```
+<img width="1920" height="933" alt="Screenshot 2026-07-06 193150" src="https://github.com/user-attachments/assets/62df3f94-531b-45e0-b0e8-6fa4ad513c67" />
+
+
+
+
+
 
 API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 

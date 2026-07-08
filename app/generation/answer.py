@@ -65,7 +65,7 @@ Provide a grounded answer with inline citations [1], [2], etc. referencing the c
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": user_prompt},
             ],
-            temperature=0.1,
+            temperature=0.1
         )
         answer = response.choices[0].message.content or ""
 

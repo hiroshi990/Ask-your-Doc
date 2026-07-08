@@ -7,7 +7,7 @@ router = APIRouter()
 rag_service = EvaluationService()
 
 
-@router.post("", response_model=EvaluatedResponse)
+@router.post("/chat", response_model=EvaluatedResponse)
 async def chat(request: ChatRequest) -> EvaluatedResponse:
 
     return await rag_service.run_evaluation(request)

@@ -15,7 +15,7 @@ pipeline = IngestionPipeline()
 @router.post("/upload", response_model=DocumentUploadResponse)
 async def upload_document(
     file: UploadFile = File(...),
-    document_name: str = Form(default=""),
+    document_name: str = Form(),
 ) -> DocumentUploadResponse:
     suffix = Path(file.filename or "document.txt").suffix
     save_path = settings.upload_dir / f"{uuid.uuid4()}{suffix}"
@@ -24,7 +24,7 @@ async def upload_document(
         shutil.copyfileobj(file.file, f)
 
     try:
-        doc_info, _ = pipeline.ingest_file(
+        doc_info, _ = await pipeline.ingest_file(
             file_path=save_path,
             document_name=document_name or None,
         )
@@ -41,10 +41,10 @@ async def upload_document(
 
 
 @router.post("/paste", response_model=DocumentUploadResponse)
-def paste_text(payload: PastedTextRequest) -> DocumentUploadResponse:
+async def paste_text(payload: PastedTextRequest) -> DocumentUploadResponse:
     try:
 
-        doc_info, _ = pipeline.ingest_pasted_text(
+        doc_info, _ = await pipeline.ingest_pasted_text(
             content=payload.content,
             title=payload.title,
         )
@@ -67,12 +67,12 @@ def get_documents(document_id:str) -> Optional[DocumentInfo]:
 
 
 @router.delete("/flush_all",status_code=204)
-def delete() -> None:
-    if not pipeline.database_flush():
+async def delete() -> None:
+    if not await pipeline.database_flush():
         raise HTTPException(status_code=404, detail = 'Already empty')
 
 
-@router.delete("/{document_id}", status_code=204)
-def delete_document(document_id: str) -> None:
-    if not pipeline.delete_document(document_id):
+@router.delete("/delete_by_id", status_code=204)
+async def delete_document(document_id: str) -> None:
+    if not await pipeline.delete_document(document_id):
         raise HTTPException(status_code=404, detail="Document not found")

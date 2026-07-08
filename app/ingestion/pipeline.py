@@ -33,7 +33,7 @@ class IngestionPipeline:
         self.embedder = embedder or get_embedder()
         self.cache = cache or RedisCache()
 
-    def ingest_file(
+    async def ingest_file(
         self,
         file_path: Path,
         document_name: Optional[str] = None,
@@ -50,7 +50,7 @@ class IngestionPipeline:
             source_type=source_type,
         )
 
-        self._index_chunks(chunks)
+        await self._index_chunks(chunks)
 
         now = datetime.now(timezone.utc)
         doc_info = DocumentInfo(
@@ -66,7 +66,7 @@ class IngestionPipeline:
         logger.info("Ingested %s: %d chunks", name, len(chunks))
         return doc_info, chunks
 
-    def ingest_pasted_text(
+    async def ingest_pasted_text(
         self,
         content: str,
         title: Optional[str] ,
@@ -82,7 +82,7 @@ class IngestionPipeline:
             source_type=source_type,
         )
 
-        self._index_chunks(chunks)
+        await self._index_chunks(chunks)
 
         now = datetime.now(timezone.utc)
         doc_info = DocumentInfo(
@@ -97,24 +97,24 @@ class IngestionPipeline:
         self.cache.flush_all()
         return doc_info, chunks
 
-    def delete_document(self, document_id: str) -> bool:
+    async def delete_document(self, document_id: str) -> bool:
         doc = self.document_store.get(document_id)
         if not doc:
             return False
 
-        self.qdrant.delete_by_document_id(document_id)
+        await self.qdrant.delete_by_document_id(document_id)
         self.bm25.remove_document(document_id)
         self.document_store.delete(document_id)
         self.cache.flush_all()
         logger.info("Deleted document %s and all its chunks", document_id)
         return True
     
-    def database_flush(self) -> bool:
+    async def database_flush(self) -> bool:
         doc = self.document_store._load()
         if not doc :
             return False
         
-        self.qdrant.delete_everything()
+        await self.qdrant.delete_everything()
         self.bm25.remove_everything()
         self.document_store.delete_all()
         self.cache.flush_all()
@@ -122,12 +122,12 @@ class IngestionPipeline:
         return True
 
 
-    def _index_chunks(self, chunks: list[ChunkRecord]) -> None:
+    async def _index_chunks(self, chunks: list[ChunkRecord]) -> None:
         if not chunks:
             return
 
         texts = [c.text for c in chunks]
         embeddings = self.embedder.embed_texts(texts)
 
-        self.qdrant.upsert_chunks(chunks=chunks, embeddings=embeddings)
+        await self.qdrant.upsert_chunks(chunks=chunks, embeddings=embeddings)
         self.bm25.add_chunks(chunks)

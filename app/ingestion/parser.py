@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 SUPPORTED_EXTENSIONS = {
     ".pdf", ".docx", ".doc", ".pptx", ".ppt", ".xlsx", ".xls",
     ".html", ".htm", ".md", ".txt", ".csv", ".json", ".xml",
-    ".png", ".jpg", ".jpeg", ".tiff", ".tif", ".webp",
+    ".tiff", ".tif", ".webp"
 }
 
 
@@ -23,8 +23,8 @@ class DocumentParser:
 
     def __init__(self) -> None:
         self.options = PdfPipelineOptions()
-        self.options.do_ocr = False
-        self.options.do_table_structure = False
+        self.options.do_ocr = True
+        self.options.do_table_structure = True
         self.converter = DocumentConverter(format_options={
                     InputFormat.PDF:PdfFormatOption(
                         pipeline_options=self.options

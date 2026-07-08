@@ -21,9 +21,7 @@ User Query
     ↓
 Redis Exact Cache Check
     ↓
-Dense Retrieval (Qdrant + BAAI/bge-m3)
-    +
-Sparse Retrieval (BM25)
+Dense Retrieval(Qdrant + BAAI/bge-m3) + Sparse Retrieval(BM25) [Asynchronous]
     ↓
 RRF Fusion → Deduplication → Cohere Rerank
     ↓
@@ -60,17 +58,13 @@ pip install -r requirements.txt
 ```bash
 python run.py
 ```
-<img width="1853" height="577" alt="Screenshot 2026-06-22 214942" src="https://github.com/user-attachments/assets/61ec592b-3bbe-4d09-a4db-a915e5b6e1e0" />
+<img width="1913" height="949" alt="image" src="https://github.com/user-attachments/assets/f0721dc8-58f4-4ffb-9e6d-de888b5b8a95" />
 
-<img width="1383" height="96" alt="Screenshot 2026-06-22 215104" src="https://github.com/user-attachments/assets/6cd31973-d523-4d91-aa11-cde60a980fa8" />
+<img width="1908" height="930" alt="image" src="https://github.com/user-attachments/assets/cb37280e-9725-4062-87fa-de49bdcf18b3" />
 
-<img width="1283" height="433" alt="Screenshot 2026-06-22 220749" src="https://github.com/user-attachments/assets/32791fa3-2a4a-4b45-8636-5d2063e6c75d" />
+<img width="1901" height="925" alt="image" src="https://github.com/user-attachments/assets/b2a4afec-4b51-4631-b384-a8bf7e959572" />
 
-<img width="1458" height="340" alt="Screenshot 2026-06-22 222313" src="https://github.com/user-attachments/assets/5745366f-8de0-46e4-8c5b-279c8149bf52" />
-
-
-
-
+<img width="1907" height="951" alt="image" src="https://github.com/user-attachments/assets/a3bc44c7-7c30-4355-9e7e-c1ad6b8a7e85" />
 
 API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
